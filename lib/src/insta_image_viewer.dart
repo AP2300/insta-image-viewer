@@ -198,7 +198,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
         backgroundColor: Colors.transparent,
         body: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          color: Colors.black.withOpacity(_opacity),
+          color: Colors.black.withOpacity(0),
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
           ),
