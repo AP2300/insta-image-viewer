@@ -170,8 +170,8 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
 
   setOpacity() {
     final double tmp = _positionYDelta < 0
-        ? 1 - ((_positionYDelta / 1500) * -1)
-        : 1 - (_positionYDelta / 1500);
+        ? 1 - ((_positionYDelta / 800) * -1)
+        : 1 - (_positionYDelta / 800);
     if (kDebugMode) {
       print(tmp);
     }
