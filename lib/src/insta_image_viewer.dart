@@ -240,6 +240,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                   alignment: Alignment.bottomCenter,
                   child: Card(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         ListTile(
                           title: const Text("test"),
