@@ -195,8 +195,8 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
     return Hero(
       tag: widget.tag,
       child: Scaffold(
-        backgroundColor: Colors.black.withOpacity(_opacity),
         body: Container(
+          color: Colors.black.withOpacity(_opacity),
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
           ),
