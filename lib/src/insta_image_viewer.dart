@@ -172,6 +172,9 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
     final double tmp = _positionYDelta < 0
         ? 1 - ((_positionYDelta / 1000) * -1)
         : 1 - (_positionYDelta / 1000);
+    if (kDebugMode) {
+      print(tmp);
+    }
 
     if (tmp > 1) {
       _opacity = 1;
@@ -181,12 +184,9 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
       _opacity = tmp;
     }
 
-    if (_positionYDelta > _disposeLimit || _positionYDelta < -_disposeLimit) {
-      _opacity = 1;
-    }
-    if (kDebugMode) {
-      print(_opacity);
-    }
+    // if (_positionYDelta > _disposeLimit || _positionYDelta < -_disposeLimit) {
+    //   _opacity = 1;
+    // }
   }
 
   @override
@@ -198,7 +198,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
         backgroundColor: Colors.transparent,
         body: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
-          color: Colors.black.withOpacity(0),
+          color: Colors.black.withOpacity(_opacity),
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
           ),
