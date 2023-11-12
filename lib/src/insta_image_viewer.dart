@@ -6,28 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class CardMetadata {
-  CardMetadata(this.trackName, this.trackArtist, this.quoteString,
-      this.trackAlbum, this.dateCreated, this.size,
-      {this.displayUrl});
-
-  final String trackName;
-  final String trackArtist;
-  final String quoteString;
-  final String trackAlbum;
-  final DateTime dateCreated;
-  final int size;
-
-  String? displayUrl;
-
-  Map<String, String> toMap() => {
-        "trackName": trackName,
-        "trackArtist": trackArtist,
-        "quoteString": quoteString,
-        "trackAlbum": trackAlbum,
-      };
-}
-
 const _kRouteDuration = Duration(milliseconds: 300);
 
 class InstaImageViewer extends StatelessWidget {
@@ -57,7 +35,7 @@ class InstaImageViewer extends StatelessWidget {
   /// if true the swipe down\up will be disabled
   /// - it gives more predictable behaviour
 
-  final CardMetadata item;
+  final dynamic item;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +86,7 @@ class FullScreenViewer extends StatefulWidget {
   final bool backgroundIsTransparent;
   final DisposeLevel? disposeLevel;
   final UniqueKey tag;
-  final CardMetadata item;
+  final dynamic item;
 
   @override
   _FullScreenViewerState createState() => _FullScreenViewerState();
