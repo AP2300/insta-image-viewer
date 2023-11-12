@@ -69,6 +69,8 @@ class InstaImageViewer extends StatelessWidget {
                       disposeLevel: disposeLevel,
                       item: item,
                       userPicture: userPicture,
+                      deleteTask: deleteTask,
+                      shareTask: shareTask,
                     );
                   }));
         },
