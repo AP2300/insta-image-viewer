@@ -223,29 +223,24 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                 ),
               ),
               Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 60, 30, 0),
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(40),
-                        ),
-                        color: Color(0xff222222),
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          CupertinoIcons.clear,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
+                alignment: Alignment.bottomCenter,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Card(
+                    shape: CircleBorder(),
+                    child: Icon(Icons.close_rounded),
                   ),
                 ),
+              ),
+              const Align(
+                alignment: Alignment.bottomCenter,
+                child: Card(
+                    child: SizedBox(
+                  width: 100,
+                  height: 100,
+                )),
               ),
             ],
           ),
