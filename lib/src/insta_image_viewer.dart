@@ -172,9 +172,6 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
     final double tmp = _positionYDelta < 0
         ? 1 - ((_positionYDelta / 1000) * -1)
         : 1 - (_positionYDelta / 1000);
-    if (kDebugMode) {
-      print(tmp);
-    }
 
     if (tmp > 1) {
       _opacity = 1;
@@ -186,6 +183,9 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
 
     if (_positionYDelta > _disposeLimit || _positionYDelta < -_disposeLimit) {
       _opacity = 1;
+    }
+    if (kDebugMode) {
+      print(_opacity);
     }
   }
 
