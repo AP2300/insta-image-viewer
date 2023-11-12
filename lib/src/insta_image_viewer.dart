@@ -282,7 +282,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                             subtitle: Text(
                                 "${widget.item.trackAlbum} • ${widget.item.trackArtist}"),
                             trailing: IconButton(
-                              onPressed: () => widget.shareTask,
+                              onPressed: () => widget.shareTask(),
                               icon: const Icon(Icons.share_rounded),
                             ),
                           ),
@@ -296,7 +296,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                             trailing: IconButton(
                               color:
                                   Theme.of(context).colorScheme.errorContainer,
-                              onPressed: () => widget.deleteTask,
+                              onPressed: () => widget.deleteTask(),
                               icon: Icon(Icons.delete_forever_rounded,
                                   color: Theme.of(context).colorScheme.error),
                             ),
