@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const _kRouteDuration = Duration(milliseconds: 300);
 
@@ -16,6 +17,7 @@ class InstaImageViewer extends StatelessWidget {
     this.backgroundColor = Colors.black,
     this.backgroundIsTransparent = true,
     this.disposeLevel,
+    required this.userPicture,
   }) : super(key: key);
 
   /// Image widget
@@ -36,6 +38,8 @@ class InstaImageViewer extends StatelessWidget {
   /// - it gives more predictable behaviour
 
   final dynamic item;
+
+  final String userPicture;
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +63,7 @@ class InstaImageViewer extends StatelessWidget {
                       backgroundIsTransparent: backgroundIsTransparent,
                       disposeLevel: disposeLevel,
                       item: item,
+                      userPicture: userPicture,
                     );
                   }));
         },
@@ -79,6 +84,7 @@ class FullScreenViewer extends StatefulWidget {
     this.backgroundColor = Colors.black,
     this.backgroundIsTransparent = true,
     this.disposeLevel = DisposeLevel.medium,
+    required this.userPicture,
   }) : super(key: key);
 
   final Widget child;
@@ -87,6 +93,7 @@ class FullScreenViewer extends StatefulWidget {
   final DisposeLevel? disposeLevel;
   final UniqueKey tag;
   final dynamic item;
+  final String userPicture;
 
   @override
   _FullScreenViewerState createState() => _FullScreenViewerState();
@@ -188,7 +195,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
     return Hero(
       tag: widget.tag,
       child: Scaffold(
-        backgroundColor: const Color.fromARGB(108, 0, 0, 0),
+        backgroundColor: const Color.fromARGB(176, 0, 0, 0),
         body: Container(
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
@@ -252,17 +259,28 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ListTile(
-                            title: Text(widget.item.trackName),
+                            leading: CircleAvatar(
+                              backgroundImage: NetworkImage(widget.userPicture),
+                            ),
+                            title: Text(
+                              widget.item.trackName,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             subtitle: Text(
                                 "${widget.item.trackAlbum} • ${widget.item.trackArtist}"),
-                            trailing: IconButton.filled(
+                            trailing: IconButton(
                               onPressed: () {},
                               icon: const Icon(Icons.share_rounded),
                             ),
                           ),
                           ListTile(
-                            title: const Text("Date test"),
-                            subtitle: const Text("file size Test"),
+                            title: Text(
+                              "${DateFormat.yMMMEd().format(widget.item.dateCreated)} • ${DateFormat.jm().format(widget.item.dateCreated)}",
+                            ),
+                            subtitle: Text(
+                              getFileSizeString(bytes: widget.item.size),
+                            ),
                             trailing: IconButton(
                               color:
                                   Theme.of(context).colorScheme.errorContainer,
@@ -283,6 +301,13 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
       ),
     );
   }
+}
+
+String getFileSizeString({required int bytes, int decimals = 0}) {
+  const suffixes = ["b", "kb", "mb", "gb", "tb"];
+  if (bytes == 0) return '0${suffixes[0]}';
+  var i = (log(bytes) / log(1024)).floor();
+  return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + suffixes[i];
 }
 
 class KeymotionGestureDetector extends StatelessWidget {
