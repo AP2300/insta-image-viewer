@@ -223,7 +223,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                 ),
               ),
               Align(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.topLeft,
                 child: InkWell(
                   onTap: () {
                     Navigator.pop(context);
@@ -234,14 +234,14 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                   ),
                 ),
               ),
-              const Align(
-                alignment: Alignment.bottomCenter,
-                child: Card(
-                    child: SizedBox(
-                  width: 100,
-                  height: 100,
-                )),
-              ),
+              // const Align(
+              //   alignment: Alignment.bottomCenter,
+              //   child: Card(
+              //       child: SizedBox(
+              //     width: 100,
+              //     height: 100,
+              //   )),
+              // ),
             ],
           ),
         ),
