@@ -2,7 +2,6 @@ library insta_image_viewer;
 
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -180,69 +179,92 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
     return Hero(
       tag: widget.tag,
       child: Scaffold(
-        backgroundColor: widget.backgroundIsTransparent
-            ? Colors.transparent
-            : widget.backgroundColor,
+        backgroundColor: Colors.transparent,
         body: Container(
           color: widget.backgroundColor.withOpacity(_opacity),
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
           ),
-          child: Stack(
-            children: <Widget>[
-              AnimatedPositioned(
-                duration: _animationDuration,
-                curve: Curves.fastOutSlowIn,
-                top: 0 + _positionYDelta,
-                bottom: 0 - _positionYDelta,
-                left: horizontalPosition,
-                right: horizontalPosition,
-                child: InteractiveViewer(
-                  boundaryMargin: const EdgeInsets.all(double.infinity),
-                  panEnabled: false,
-                  child: widget.disableSwipeToDismiss
-                      ? ClipRRect(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(40),
-                          ),
-                          clipBehavior: Clip.hardEdge,
-                          child: widget.child,
-                        )
-                      : KeymotionGestureDetector(
-                          onStart: (details) => _dragStart(details),
-                          onUpdate: (details) => _dragUpdate(details),
-                          onEnd: (details) => _dragEnd(details),
-                          child: ClipRRect(
+          child: SafeArea(
+            child: Stack(
+              children: <Widget>[
+                AnimatedPositioned(
+                  duration: _animationDuration,
+                  curve: Curves.fastOutSlowIn,
+                  top: 0 + _positionYDelta,
+                  bottom: 0 - _positionYDelta,
+                  left: horizontalPosition,
+                  right: horizontalPosition,
+                  child: InteractiveViewer(
+                    boundaryMargin: const EdgeInsets.all(double.infinity),
+                    panEnabled: false,
+                    child: widget.disableSwipeToDismiss
+                        ? ClipRRect(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(40),
                             ),
                             clipBehavior: Clip.hardEdge,
                             child: widget.child,
+                          )
+                        : KeymotionGestureDetector(
+                            onStart: (details) => _dragStart(details),
+                            onUpdate: (details) => _dragUpdate(details),
+                            onEnd: (details) => _dragEnd(details),
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(40),
+                              ),
+                              clipBehavior: Clip.hardEdge,
+                              child: widget.child,
+                            ),
                           ),
-                        ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Card(
-                    shape: CircleBorder(),
-                    child: Icon(Icons.close_rounded),
                   ),
                 ),
-              ),
-              // const Align(
-              //   alignment: Alignment.bottomCenter,
-              //   child: Card(
-              //       child: SizedBox(
-              //     width: 100,
-              //     height: 100,
-              //   )),
-              // ),
-            ],
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Card(
+                      elevation: 24,
+                      shape: CircleBorder(),
+                      child: Padding(
+                        padding: EdgeInsets.all(12),
+                        child: Icon(Icons.close_rounded),
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Card(
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: const Text("test"),
+                          subtitle: const Text("test sub"),
+                          trailing: IconButton.filled(
+                            onPressed: () {},
+                            icon: const Icon(Icons.share_rounded),
+                          ),
+                        ),
+                        ListTile(
+                          title: const Text("Date test"),
+                          subtitle: const Text("file size Test"),
+                          trailing: IconButton(
+                            color: Theme.of(context).colorScheme.errorContainer,
+                            onPressed: () {},
+                            icon: Icon(Icons.delete_forever_rounded,
+                                color: Theme.of(context).colorScheme.error),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
