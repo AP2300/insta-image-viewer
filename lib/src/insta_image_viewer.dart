@@ -57,7 +57,6 @@ class InstaImageViewer extends StatelessWidget {
                       backgroundColor: backgroundColor,
                       backgroundIsTransparent: backgroundIsTransparent,
                       disposeLevel: disposeLevel,
-                      disableSwipeToDismiss: disableSwipeToDismiss,
                     );
                   }));
         },
@@ -74,7 +73,6 @@ class FullScreenViewer extends StatefulWidget {
     Key? key,
     required this.child,
     required this.tag,
-    required this.disableSwipeToDismiss,
     this.backgroundColor = Colors.black,
     this.backgroundIsTransparent = true,
     this.disposeLevel = DisposeLevel.medium,
@@ -85,7 +83,6 @@ class FullScreenViewer extends StatefulWidget {
   final bool backgroundIsTransparent;
   final DisposeLevel? disposeLevel;
   final UniqueKey tag;
-  final bool disableSwipeToDismiss;
 
   @override
   _FullScreenViewerState createState() => _FullScreenViewerState();
@@ -103,6 +100,8 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
   double _disposeLimit = 150;
 
   Duration _animationDuration = Duration.zero;
+
+  bool showOverlay = true;
 
   @override
   void initState() {
@@ -152,6 +151,12 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
     }
   }
 
+  void _onTap() {
+    setState(() {
+      showOverlay = !showOverlay;
+    });
+  }
+
   setOpacity() {
     final double tmp = _positionYDelta < 0
         ? 1 - ((_positionYDelta / 1000) * -1)
@@ -195,29 +200,18 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                   bottom: 0 - _positionYDelta,
                   left: horizontalPosition,
                   right: horizontalPosition,
-                  child: InteractiveViewer(
-                    boundaryMargin: const EdgeInsets.all(double.infinity),
-                    panEnabled: false,
-                    child: widget.disableSwipeToDismiss
-                        ? ClipRRect(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(40),
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            child: widget.child,
-                          )
-                        : KeymotionGestureDetector(
-                            onStart: (details) => _dragStart(details),
-                            onUpdate: (details) => _dragUpdate(details),
-                            onEnd: (details) => _dragEnd(details),
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(40),
-                              ),
-                              clipBehavior: Clip.hardEdge,
-                              child: widget.child,
-                            ),
-                          ),
+                  child: KeymotionGestureDetector(
+                    onStart: (details) => _dragStart(details),
+                    onUpdate: (details) => _dragUpdate(details),
+                    onEnd: (details) => _dragEnd(details),
+                    onTap: () => _onTap(),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(40),
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      child: widget.child,
+                    ),
                   ),
                 ),
                 Align(
@@ -226,41 +220,50 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: const Card(
-                      elevation: 24,
-                      shape: CircleBorder(),
-                      child: Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Icon(Icons.close_rounded),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Card(
+                        elevation: 24,
+                        shape: CircleBorder(),
+                        child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Icon(Icons.close_rounded),
+                        ),
                       ),
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Card(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ListTile(
-                          title: const Text("test"),
-                          subtitle: const Text("test sub"),
-                          trailing: IconButton.filled(
-                            onPressed: () {},
-                            icon: const Icon(Icons.share_rounded),
+                AnimatedOpacity(
+                  opacity: showOverlay ? 1.0 : 0,
+                  duration: _animationDuration,
+                  curve: Curves.easeIn,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Card(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListTile(
+                            title: const Text("test"),
+                            subtitle: const Text("test sub"),
+                            trailing: IconButton.filled(
+                              onPressed: () {},
+                              icon: const Icon(Icons.share_rounded),
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          title: const Text("Date test"),
-                          subtitle: const Text("file size Test"),
-                          trailing: IconButton(
-                            color: Theme.of(context).colorScheme.errorContainer,
-                            onPressed: () {},
-                            icon: Icon(Icons.delete_forever_rounded,
-                                color: Theme.of(context).colorScheme.error),
+                          ListTile(
+                            title: const Text("Date test"),
+                            subtitle: const Text("file size Test"),
+                            trailing: IconButton(
+                              color:
+                                  Theme.of(context).colorScheme.errorContainer,
+                              onPressed: () {},
+                              icon: Icon(Icons.delete_forever_rounded,
+                                  color: Theme.of(context).colorScheme.error),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -281,12 +284,14 @@ class KeymotionGestureDetector extends StatelessWidget {
     this.onUpdate,
     this.onEnd,
     this.onStart,
+    this.onTap,
   }) : super(key: key);
 
   final Widget child;
   final GestureDragUpdateCallback? onUpdate;
   final GestureDragEndCallback? onEnd;
   final GestureDragStartCallback? onStart;
+  final GestureTapCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -300,6 +305,11 @@ class KeymotionGestureDetector extends StatelessWidget {
           ..onEnd = onEnd,
         (instance) {},
       ),
+      TapGestureRecognizer:
+          GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+        () => TapGestureRecognizer()..onTap = onTap,
+        (instance) {},
+      )
       // DoubleTapGestureRecognizer: GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
       //   () => DoubleTapGestureRecognizer()..onDoubleTap = onDoubleTap,
       //   (instance) {},
