@@ -18,6 +18,8 @@ class InstaImageViewer extends StatelessWidget {
     this.backgroundIsTransparent = true,
     this.disposeLevel,
     required this.userPicture,
+    this.deleteTask,
+    this.shareTask,
   }) : super(key: key);
 
   /// Image widget
@@ -40,6 +42,9 @@ class InstaImageViewer extends StatelessWidget {
   final dynamic item;
 
   final String userPicture;
+
+  final dynamic deleteTask;
+  final dynamic shareTask;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +90,8 @@ class FullScreenViewer extends StatefulWidget {
     this.backgroundIsTransparent = true,
     this.disposeLevel = DisposeLevel.medium,
     required this.userPicture,
+    this.deleteTask,
+    this.shareTask,
   }) : super(key: key);
 
   final Widget child;
@@ -94,6 +101,9 @@ class FullScreenViewer extends StatefulWidget {
   final UniqueKey tag;
   final dynamic item;
   final String userPicture;
+
+  final dynamic deleteTask;
+  final dynamic shareTask;
 
   @override
   _FullScreenViewerState createState() => _FullScreenViewerState();
@@ -272,7 +282,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                             subtitle: Text(
                                 "${widget.item.trackAlbum} • ${widget.item.trackArtist}"),
                             trailing: IconButton(
-                              onPressed: () {},
+                              onPressed: () => widget.shareTask,
                               icon: const Icon(Icons.share_rounded),
                             ),
                           ),
@@ -286,7 +296,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                             trailing: IconButton(
                               color:
                                   Theme.of(context).colorScheme.errorContainer,
-                              onPressed: () {},
+                              onPressed: () => widget.deleteTask,
                               icon: Icon(Icons.delete_forever_rounded,
                                   color: Theme.of(context).colorScheme.error),
                             ),
