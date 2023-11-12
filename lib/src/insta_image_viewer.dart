@@ -6,16 +6,38 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+class CardMetadata {
+  CardMetadata(this.trackName, this.trackArtist, this.quoteString,
+      this.trackAlbum, this.dateCreated, this.size,
+      {this.displayUrl});
+
+  final String trackName;
+  final String trackArtist;
+  final String quoteString;
+  final String trackAlbum;
+  final DateTime dateCreated;
+  final int size;
+
+  String? displayUrl;
+
+  Map<String, String> toMap() => {
+        "trackName": trackName,
+        "trackArtist": trackArtist,
+        "quoteString": quoteString,
+        "trackAlbum": trackAlbum,
+      };
+}
+
 const _kRouteDuration = Duration(milliseconds: 300);
 
 class InstaImageViewer extends StatelessWidget {
   const InstaImageViewer({
     Key? key,
     required this.child,
+    required this.item,
     this.backgroundColor = Colors.black,
     this.backgroundIsTransparent = true,
     this.disposeLevel,
-    this.disableSwipeToDismiss = false,
   }) : super(key: key);
 
   /// Image widget
@@ -34,7 +56,8 @@ class InstaImageViewer extends StatelessWidget {
 
   /// if true the swipe down\up will be disabled
   /// - it gives more predictable behaviour
-  final bool disableSwipeToDismiss;
+
+  final CardMetadata item;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +80,7 @@ class InstaImageViewer extends StatelessWidget {
                       backgroundColor: backgroundColor,
                       backgroundIsTransparent: backgroundIsTransparent,
                       disposeLevel: disposeLevel,
+                      item: item,
                     );
                   }));
         },
@@ -73,6 +97,7 @@ class FullScreenViewer extends StatefulWidget {
     Key? key,
     required this.child,
     required this.tag,
+    required this.item,
     this.backgroundColor = Colors.black,
     this.backgroundIsTransparent = true,
     this.disposeLevel = DisposeLevel.medium,
@@ -83,6 +108,7 @@ class FullScreenViewer extends StatefulWidget {
   final bool backgroundIsTransparent;
   final DisposeLevel? disposeLevel;
   final UniqueKey tag;
+  final CardMetadata item;
 
   @override
   _FullScreenViewerState createState() => _FullScreenViewerState();
@@ -186,7 +212,6 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Container(
-          color: widget.backgroundColor.withOpacity(_opacity),
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
           ),
@@ -214,20 +239,25 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Card(
-                        elevation: 24,
-                        shape: CircleBorder(),
-                        child: Padding(
-                          padding: EdgeInsets.all(8),
-                          child: Icon(Icons.close_rounded),
+                AnimatedOpacity(
+                  opacity: showOverlay ? 1.0 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 24,
+                          shape: CircleBorder(),
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Icon(Icons.close_rounded),
+                          ),
                         ),
                       ),
                     ),
@@ -235,7 +265,7 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                 ),
                 AnimatedOpacity(
                   opacity: showOverlay ? 1.0 : 0,
-                  duration: _animationDuration,
+                  duration: const Duration(milliseconds: 300),
                   curve: Curves.easeIn,
                   child: Align(
                     alignment: Alignment.bottomCenter,
@@ -244,8 +274,9 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ListTile(
-                            title: const Text("test"),
-                            subtitle: const Text("test sub"),
+                            title: Text(widget.item.trackName),
+                            subtitle: Text(
+                                "${widget.item.trackAlbum} • ${widget.item.trackArtist}"),
                             trailing: IconButton.filled(
                               onPressed: () {},
                               icon: const Icon(Icons.share_rounded),
