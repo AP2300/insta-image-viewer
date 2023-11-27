@@ -20,6 +20,7 @@ class InstaImageViewer extends StatelessWidget {
     required this.userPicture,
     this.deleteTask,
     this.shareTask,
+    this.downloadTask,
   }) : super(key: key);
 
   /// Image widget
@@ -45,6 +46,7 @@ class InstaImageViewer extends StatelessWidget {
 
   final dynamic deleteTask;
   final dynamic shareTask;
+  final dynamic downloadTask;
 
   @override
   Widget build(BuildContext context) {
@@ -71,6 +73,7 @@ class InstaImageViewer extends StatelessWidget {
                       userPicture: userPicture,
                       deleteTask: deleteTask,
                       shareTask: shareTask,
+                      downloadTask: downloadTask,
                     );
                   }));
         },
@@ -94,6 +97,7 @@ class FullScreenViewer extends StatefulWidget {
     required this.userPicture,
     this.deleteTask,
     this.shareTask,
+    this.downloadTask,
   }) : super(key: key);
 
   final Widget child;
@@ -106,6 +110,7 @@ class FullScreenViewer extends StatefulWidget {
 
   final dynamic deleteTask;
   final dynamic shareTask;
+  final dynamic downloadTask;
 
   @override
   _FullScreenViewerState createState() => _FullScreenViewerState();
@@ -256,6 +261,30 @@ class _FullScreenViewerState extends State<FullScreenViewer> {
                           child: Padding(
                             padding: EdgeInsets.all(8),
                             child: Icon(Icons.close_rounded),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: showOverlay ? 1.0 : 0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeIn,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () {
+                        widget.downloadTask();
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 24,
+                          shape: CircleBorder(),
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Icon(Icons.download_rounded),
                           ),
                         ),
                       ),
